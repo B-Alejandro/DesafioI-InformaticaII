@@ -1,58 +1,61 @@
-/*
- * Programa demostrativo de manipulaciónprocesamiento de imágenes BMP en C++ usando Qt.
- *
- * Descripción:
- * Este programa realiza las siguientes tareas:
- * 1. Carga una imagen BMP desde un archivo (formato RGB sin usar estructuras ni STL).
- * 2. Modifica los valores RGB de los píxeles asignando un degradado artificial basado en su posición.
- * 3. Exporta la imagen modificada a un nuevo archivo BMP.
- * 4. Carga un archivo de texto que contiene una semilla (offset) y los resultados del enmascaramiento
- *    aplicados a una versión transformada de la imagen, en forma de tripletas RGB.
- * 5. Muestra en consola los valores cargados desde el archivo de enmascaramiento.
- * 6. Gestiona la memoria dinámicamente, liberando los recursos utilizados.
- *
- * Entradas:
- * - Archivo de imagen BMP de entrada ("I_O.bmp").
- * - Archivo de salida para guardar la imagen modificada ("I_D.bmp").
- * - Archivo de texto ("M1.txt") que contiene:
- *     • Una línea con la semilla inicial (offset).
- *     • Varias líneas con tripletas RGB resultantes del enmascaramiento.
- *
- * Salidas:
- * - Imagen BMP modificada ("I_D.bmp").
- * - Datos RGB leídos desde el archivo de enmascaramiento impresos por consola.
- *
- * Requiere:
- * - Librerías Qt para manejo de imágenes (QImage, QString).
- * - No utiliza estructuras ni STL. Solo arreglos dinámicos y memoria básica de C++.
- *
- * Autores: Augusto Salazar Y Aníbal Guerra
- * Fecha: 06/04/2025
- * Asistencia de ChatGPT para mejorar la forma y presentación del código fuente
- */
-
 #include <fstream>
 #include <iostream>
 #include <QCoreApplication>
 #include <QImage>
-#include "FuncionesAbrirImagen.h"  // Asegúrate de que esté correctamente nombrado y en el path
+#include <QString>
+#include "FuncionesAbrirImagen.h"
 
 using namespace std;
 
-// XOR entre dos imágenes
-unsigned char* DoXOR(unsigned char* imagen, unsigned char* mascara, int width, int height) {
-    int numPixels = width * height;
-    unsigned char* pixeles = new unsigned char[numPixels * 3];
-
-    for (int i = 0; i < numPixels * 3; ++i) {
-        pixeles[i] = imagen[i] ^ mascara[i];
-    }
-
-    return pixeles;
+/**
+ * @brief Función para sumar todos los valores RGB de una imagen.
+ * @return Suma total de los valores de píxeles (sin implementar).
+ */
+int SumaPixeles() {
+    // TODO: Implementar si es necesario
+    return 0;
 }
 
-// Rotar bits a la derecha
+/**
+ * @brief Realiza una operación XOR entre dos imágenes.
+ *
+ * @param imagen Arreglo de bytes con la información de los píxeles de la imagen original.
+ * @param mascara Arreglo de bytes con la información de los píxeles de la máscara.
+ * @param width Ancho de las imágenes.
+ * @param height Alto de las imágenes.
+ * @return unsigned char* Nuevo arreglo con el resultado del XOR entre imagen y máscara.
+ */
+unsigned char* DoXOR(unsigned char* imagen, unsigned char* mascara, int width, int height) {
+    int numPixels = width * height * 3;
+    unsigned char* resultado = new unsigned char[numPixels];
+
+    for (int i = 0; i < numPixels; i += 3) {
+        resultado[i]     = imagen[i]     ^ mascara[i];
+        resultado[i + 1] = imagen[i + 1] ^ mascara[i + 1];
+        resultado[i + 2] = imagen[i + 2] ^ mascara[i + 2];
+    }
+
+    return resultado;
+}
+
+/**
+ * @brief Rota los bits de cada byte a la derecha.
+ *
+ * @param num_pixels Número total de píxeles de la imagen.
+ * @param img Arreglo de píxeles original.
+ * @param n Número de bits a rotar.
+ * @return unsigned char* Nuevo arreglo con los bits rotados.
+ */
 unsigned char* RotarDerecha(int num_pixels, unsigned char* img, int n) {
+    /**
+ * @brief Rota los bits de cada byte a la izquierda.
+ *
+ * @param num_pixels Número total de píxeles de la imagen.
+ * @param img Arreglo de píxeles original.
+ * @param n Número de bits a rotar.
+ * @return unsigned char* Nuevo arreglo con los bits rotados.
+ */
+    n %= 8;
     unsigned char* resultado = new unsigned char[num_pixels * 3];
 
     for (int i = 0; i < num_pixels * 3; ++i) {
@@ -62,8 +65,9 @@ unsigned char* RotarDerecha(int num_pixels, unsigned char* img, int n) {
     return resultado;
 }
 
-// Rotar bits a la izquierda
+
 unsigned char* RotarIzquierda(int num_pixels, unsigned char* img, int n) {
+    n %= 8;
     unsigned char* resultado = new unsigned char[num_pixels * 3];
 
     for (int i = 0; i < num_pixels * 3; ++i) {
@@ -72,116 +76,249 @@ unsigned char* RotarIzquierda(int num_pixels, unsigned char* img, int n) {
 
     return resultado;
 }
+unsigned char* Enmascaramiento(unsigned char* originales, unsigned char* mascara, int cantidad, int seed) {
+    unsigned char* mask = originales + seed;
+    unsigned char* sumar=new unsigned char[cantidad];
+    for (int i = 0; i < cantidad; ++i) {
+        sumar[i] = mask[i] + mascara[i];  // modifica directamente la imagen original
+        cout<<int (sumar[i])<<endl;
+    }
 
-int main(int argc, char *argv[]) {
-    QCoreApplication app(argc, argv);
+    return sumar-seed;  // devuelve el puntero original
+}
 
-    // Ruta de imágenes
-    QString archivoMascara = "C:/Users/alejb/Desktop/DesafioIPublicar/DesafioI/Caso 1/I_M";
-    QString archivoImagen  = "C:/Users/alejb/Desktop/DesafioIPublicar/DesafioI/Caso 1/I_O";
+int main() {
+    // Rutas de los archivos BMP
 
+    QString ruta = "Datos/Caso 1/";
+    QString rutaMascara  = ruta + "I_M.bmp";
+    QString rutaImagen   = ruta + "I_O.bmp";
+    QString rutaMasking  = ruta + "M.bmp";
+    QString rutaImagenP2 = ruta + "P2.bmp";
+    QString rutaMaskTxt  = ruta + "M2.txt";
+    cout<<rutaImagenP2.toStdString()<<endl;
+    string rutaMaskTXT=rutaMaskTxt.toStdString();
     int width = 0, height = 0;
 
-    // Cargar imágenes
-    unsigned char* Mascara = loadPixels(archivoMascara, width, height);
-    if (!Mascara) {
-        cerr << "Error al cargar la máscara." << endl;
-        return -1;
-    }
+    // Cargar imágenes BMP
+    unsigned char* Mascara = loadPixels(rutaMascara, width, height);
+    unsigned char* Imagen  = loadPixels(rutaImagen, width, height);
 
-    unsigned char* Imagen = loadPixels(archivoImagen, width, height);
-    if (!Imagen) {
-        cerr << "Error al cargar la imagen." << endl;
+    if (!Mascara || !Imagen) {
+        cerr << "Error al cargar las imágenes." << endl;
         delete[] Mascara;
-        return -1;
+        delete[] Imagen;
+        return 1;
     }
 
-    // XOR 1
+    int numPixels = width * height;
+
+    // Paso 1: XOR entre Imagen y Mascara
     unsigned char* paso1 = DoXOR(Imagen, Mascara, width, height);
 
-    // Rotar bits
-    int num_pixels = width * height;
-    unsigned char* paso2 = RotarDerecha(num_pixels, paso1, 3);
+    // Paso 2: Rotación de bits a la derecha
+    unsigned char* paso2 = RotarDerecha(numPixels, paso1, 3);
 
-    // XOR 2
+    // Paso 3: Segundo XOR con la máscara
     unsigned char* resultadoFinal = DoXOR(paso2, Mascara, width, height);
-    // Liberar memoria
-    delete[] resultadoFinal;
-    delete[] paso2;
-    delete[] paso1;
-    delete[] Imagen;
-    delete[] Mascara;
-    int seed = 0;
-    int n_pixels = 0;
 
-    // Carga los datos de enmascaramiento desde un archivo .txt (semilla + valores RGB)
-    unsigned int *maskingData = loadSeedMasking("C:/Users/alejb/Desktop/DesafioIPublicar/DesafioI/Caso 1/M1.txt", seed, n_pixels);
+    // Cargar y mostrar datos de enmascaramiento (M.bmp)
+    int widthM = 0, heightM = 0;
+    unsigned char* maskingData = loadPixels(rutaMasking, widthM, heightM);
 
-    // Muestra en consola los primeros valores RGB leídos desde el archivo de enmascaramiento
-    for (int i = 0; i < n_pixels * 3; i += 3) {
-        cout << "Pixel " << i / 3 << ": ("
-             << maskingData[i] << ", "
-             << maskingData[i + 1] << ", "
-             << maskingData[i + 2] << ")" << endl;
+    if (!maskingData) {
+        cout<< "Error al cargar la imagen de enmascaramiento." << endl;
+
     }
+    // Cargar segunda imagen y máscara (P2.bmp y M2.txt)
+    unsigned char* p2 = loadPixels(rutaImagenP2, width, height);
+    exportImage(p2,width,height,"C:/Users/alejb/Desktop/Ij.bmp");
+    int seed = 0, npixel = 0;
+
+    unsigned int* mask = loadSeedMasking(rutaMaskTXT, seed, npixel);
+    int c;
+    unsigned char* p3=Enmascaramiento( p2,maskingData,(widthM * heightM),seed);
+    for (int i = 0; i < 100; ++i) {
+        c=i*3;
+        int r = p3[c];
+        int g = p3[c + 1];
+        int b = p3[c + 2];
+        cout <<"pixel "<<i<<" = "<< r << "," << g << "," << b << endl;
+    }
+
+    // Liberar memoria
+    delete[] Mascara;
+    delete[] Imagen;
+    delete[] paso1;
+    delete[] paso2;
+    delete[] resultadoFinal;
+    delete[] maskingData;
+    delete[] p2;
+    delete[] mask;
 
     return 0;
 }
 
+// int main() {
+//     int width = 0, height = 0;
 
-/*
-int example()
-{
-    // Definición de rutas de archivo de entrada (imagen original) y salida (imagen modificada)
-    QString archivoEntrada = "/home/qjiope/Desktop/DesafíoI/Caso 2/I_M.bmp";
-    QString archivoSalida = "/home/qjiope/Desktop/DesafíoI/Caso 2/PrUEBA.bmp";
+//
+//     QString rutaBsalida = "C:/Users/alejb/Desktop/pruebas/";
 
-    // Variables para almacenar las dimensiones de la imagen
-    int height = 0;
-    int width = 0;
+//     QString rutaI_M = rutaEntrada + "I_M.bmp";
+//     QString rutaI_D = rutaEntrada + "I_D.bmp";
 
-    // Carga la imagen BMP en memoria dinámica y obtiene ancho y alto
-    unsigned char *pixelData = loadPixels(archivoEntrada, width, height);
+//     // Cargar imágenes
+//     unsigned char* I_D = loadPixels(rutaI_D, width, height);
+//     if (!I_D) {
+//         cerr << "Error al cargar imagen original." << std::endl;
+//         return 1;
+//     }
 
-    // Simula una modificación de la imagen asignando valores RGB incrementales
-    // (Esto es solo un ejemplo de manipulación artificial)
-    for (int i = 0; i < width * height * 3; i += 3) {
-        pixelData[i] = i;     // Canal rojo
-        pixelData[i + 1] = i; // Canal verde
-        pixelData[i + 2] = i; // Canal azul
-    }
+//     int widthM = 0, heightM = 0;
+//     unsigned char* I_M = loadPixels(rutaI_M, widthM, heightM);
+//     if (!I_M) {
+//         cerr << "Error al cargar máscara." << std::endl;
+//         delete[] I_D;
+//         return 1;
+//     }
 
-    // Exporta la imagen modificada a un nuevo archivo BMP
-    bool exportI = exportImage(pixelData, width, height, archivoSalida);
+//     // Validar dimensiones iguales
+//     if (width != widthM || height != heightM || width <= 0 || height <= 0) {
+//         cerr << "Dimensiones de imagen y máscara no coinciden o inválidas." << std::endl;
+//         delete[] I_D;
+//         delete[] I_M;
+//         return 1;
+//     }
 
-    // Muestra si la exportación fue exitosa (true o false)
-    cout << exportI << endl;
+//     int numPixels = width * height;
+//     const int operaciones_por_imagen = 17; // 1 XOR + 8 rotD + 8 rotI
 
-    // Libera la memoria usada para los píxeles
-    delete[] pixelData;
-    pixelData = nullptr;
+//     // Función lambda para guardar imagen (con control de errores)
+//     auto guardarImagen = [&](unsigned char* img, int etapa, int idxImagen, const QString& operacion) {
+//         if (!img) {
+//             cerr << "Puntero nulo al intentar guardar imagen." << endl;
+//             return;
+//         }
+//         QString nombreArchivo = rutaBsalida + QString("etapa%1_img%2_%3.bmp").arg(etapa).arg(idxImagen).arg(operacion);
+//         exportImage(img, width, height, nombreArchivo);
+//     };
 
-    // Variables para almacenar la semilla y el número de píxeles leídos del archivo de enmascaramiento
-    int seed = 0;
-    int n_pixels = 0;
+//     // Inicializar arreglo dinámico con la imagen original
+//     int num_imagenes_actuales = 1;
+//     unsigned char** imagenes_actuales = new(std::nothrow) unsigned char*[num_imagenes_actuales];
+//     if (!imagenes_actuales) {
+//         std::cerr << "Error al asignar memoria para arreglo de imágenes." << std::endl;
+//         delete[] I_D;
+//         delete[] I_M;
+//         return 1;
+//     }
 
-    // Carga los datos de enmascaramiento desde un archivo .txt (semilla + valores RGB)
-    unsigned int *maskingData = loadSeedMasking("/home/qjiope/Desktop/DesafíoI/Caso 2/M1.txt", seed, n_pixels);
+//     imagenes_actuales[0] = new(std::nothrow) unsigned char[numPixels * 3];
+//     if (!imagenes_actuales[0]) {
+//         std::cerr << "Error al asignar memoria para imagen original." << std::endl;
+//         delete[] imagenes_actuales;
+//         delete[] I_D;
+//         delete[] I_M;
+//         return 1;
+//     }
+//     memcpy(imagenes_actuales[0], I_D, numPixels * 3);
+//     delete[] I_D; // Liberar original
 
-    // Muestra en consola los primeros valores RGB leídos desde el archivo de enmascaramiento
-    for (int i = 0; i < n_pixels * 3; i += 3) {
-        cout << "Pixel " << i / 3 << ": ("
-             << maskingData[i] << ", "
-             << maskingData[i + 1] << ", "
-             << maskingData[i + 2] << ")" << endl;
-    }
+//     for (int etapa = 1; etapa <= 7; ++etapa) {
 
-    // Libera la memoria usada para los datos de enmascaramiento
-    if (maskingData != nullptr){
-        delete[] maskingData;
-        maskingData = nullptr;
-    }
 
-    return 0; // Fin del programa
-}
-*/
+//         int max_imagenes_siguientes = num_imagenes_actuales * operaciones_por_imagen;
+//         unsigned char** imagenes_siguientes = new(std::nothrow) unsigned char*[max_imagenes_siguientes];
+//         if (!imagenes_siguientes) {
+//             std::cerr << "Error al asignar memoria para imágenes siguientes." << std::endl;
+//             // Liberar todo antes de salir
+//             for (int i = 0; i < num_imagenes_actuales; ++i) {
+//                 delete[] imagenes_actuales[i];
+//             }
+//             delete[] imagenes_actuales;
+//             delete[] I_M;
+//             return 1;
+//         }
+
+//         int contador_siguientes = 0;
+
+//         for (int i = 0; i < num_imagenes_actuales; ++i) {
+//             unsigned char* img = imagenes_actuales[i];
+//             if (!img) {
+//                 std::cerr << "Puntero nulo en imagen actual, saltando." << std::endl;
+//                 continue;
+//             }
+
+//             // 1) XOR con la máscara
+//             unsigned char* img_xor = DoXOR(img, I_M, width, height);
+//             if (!img_xor) {
+//                 std::cerr << "Error en DoXOR." << std::endl;
+//                 continue;
+//             }
+//             if (etapa == 7) {
+//                 guardarImagen(img_xor, etapa, i, "xor");
+//             }
+//             imagenes_siguientes[contador_siguientes++] = img_xor;
+
+//             // 2) Rotaciones derecha 1 a 8 bits
+//             for (int n = 1; n <= 8; ++n) {
+//                 unsigned char* img_rotD = RotarDerecha(numPixels, img, n);
+//                 if (!img_rotD) {
+//                     std::cerr << "Error en RotarDerecha." << std::endl;
+//                     continue;
+//                 }
+//                 if (etapa == 7) {
+//                     guardarImagen(img_rotD, etapa, i, QString("rotD_%1").arg(n));
+//                 }
+//                 imagenes_siguientes[contador_siguientes++] = img_rotD;
+//             }
+
+//             // 3) Rotaciones izquierda 1 a 8 bits
+//             for (int n = 1; n <= 8; ++n) {
+//                 unsigned char* img_rotI = RotarIzquierda(numPixels, img, n);
+//                 if (!img_rotI) {
+//                     std::cerr << "Error en RotarIzquierda." << std::endl;
+//                     continue;
+//                 }
+//                 if (etapa == 7) {
+//                     guardarImagen(img_rotI, etapa, i, QString("rotI_%1").arg(n));
+//                 }
+//                 imagenes_siguientes[contador_siguientes++] = img_rotI;
+//             }
+
+//             // Liberar imagen actual
+//             delete[] img;
+//         }
+
+//         // Liberar arreglo anterior
+//         delete[] imagenes_actuales;
+
+//         imagenes_actuales = imagenes_siguientes;
+//         num_imagenes_actuales = contador_siguientes;
+
+//         // Validar que no se exceda el máximo esperado
+//         if (num_imagenes_actuales > max_imagenes_siguientes) {
+//             std::cerr << "Error: contador de imágenes excede el máximo asignado." << std::endl;
+//             // Liberar todo y salir
+//             for (int i = 0; i < num_imagenes_actuales; ++i) {
+//                 delete[] imagenes_actuales[i];
+//             }
+//             delete[] imagenes_actuales;
+//             delete[] I_M;
+//             return 1;
+//         }
+//     }
+
+//     // Liberar imágenes restantes
+//     for (int i = 0; i < num_imagenes_actuales; ++i) {
+//         delete[] imagenes_actuales[i];
+//     }
+//     delete[] imagenes_actuales;
+
+//     delete[] I_M;
+
+//     std::cout << "Procesamiento completado correctamente." << std::endl;
+//     return 0;
+// }
+//

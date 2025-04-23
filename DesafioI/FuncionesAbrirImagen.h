@@ -5,7 +5,7 @@
 #include <QCoreApplication>
 #include <QImage>
 #include <QString>
-
+using namespace std;
 // Carga los pixeles de una imagen desde la ruta 'input'
 // Devuelve un puntero a unsigned char con los datos de píxeles
 // width y height se pasan por referencia para devolver las dimensiones de la imagen
@@ -19,6 +19,6 @@ bool exportImage(unsigned char* pixelData, int width, int height, QString archiv
 // Carga una máscara de semillas desde un archivo
 // Devuelve un puntero a unsigned int con la máscara
 // seed y n_pixels se pasan por referencia para devolver información adicional
-unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels);
+unsigned int* loadSeedMasking(string nombreArchivo, int &seed, int &n_pixels);
 
 #endif // FUNCIONESABRIRIMAGEN_H
