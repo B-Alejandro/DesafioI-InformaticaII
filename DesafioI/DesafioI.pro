@@ -4,9 +4,26 @@ CONFIG += console c++17
 # CONFIG -= qt          # Esta línea debe eliminarse o comentarse para usar Qt
 QT += core
 SOURCES += main.cpp \
-    FuncionesAbrirImagen.cpp \
-    FuncionesAbrirImagen.cpp
+    BitaBit.cpp \
+    ManipulacionImagenes.cpp \
+    ManipulacionImagenes.cpp
 
 HEADERS += \
-    FuncionesAbrirImagen.h \
-    FuncionesAbrirImagen.h
+    ManipulacionImagenes.h \
+    ManipulacionImagenes.h
+
+
+HEADERS += \
+    ManipulacionImagenes.h
+
+QT += core
+SOURCES += main.cpp \
+    ManipulacionImagenes.cpp
+
+HEADERS += \
+    ManipulacionImagenes.h \
+    ManipulacionImagenes.h
+
+
+HEADERS += \
+    ManipulacionImagenes.h
