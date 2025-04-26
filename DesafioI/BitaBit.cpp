@@ -24,7 +24,7 @@
 #include <QImage>
 #include <QString>
 #include <QDir>
-#include "ManipulacionImagenes.h"
+#include "ModulosEncriptacion.h"
 
 using namespace std;
 
@@ -106,7 +106,7 @@ unsigned char* RotarDerecha(int num_pixels, unsigned char* img, int n) {
 
 
 
-unsigned char* RotarIzquierda(int num_pixels, unsigned char* img, int n) {
+unsigned char* RotarIzquierda(unsigned char* img,int num_pixels,  int n) {
     n %= 8;
     unsigned char* resultado = new unsigned char[num_pixels * 3];
 
@@ -132,13 +132,10 @@ unsigned char* RotarIzquierda(int num_pixels, unsigned char* img, int n) {
 
 
 
-
-
-void Enmascaramiento(unsigned char* originales, unsigned char* mascara, int cantidad, int seed) {
+void Desenmascaramiento(unsigned char* originales, unsigned char* mascara, int cantidad, int seed) {
     for (int i = 0; i < cantidad; ++i) {
-        int indexOriginal = seed + i ;  // Índice base en originales para el píxel i
-        int indexMascara = i ;          // Índice base en mascara para el píxel i
-
+        int indexOriginal = seed + i;  // Índice base en originales para el píxel i
+        int indexMascara = i;           // Índice base en mascara para el píxel i
 
         int maskR = mascara[indexMascara];
         int maskG = mascara[indexMascara + 1];
@@ -148,7 +145,6 @@ void Enmascaramiento(unsigned char* originales, unsigned char* mascara, int cant
         originales[indexOriginal]     -= maskR;
         originales[indexOriginal + 1] -= maskG;
         originales[indexOriginal + 2] -= maskB;
-
     }
 }
 
@@ -161,23 +157,24 @@ void Enmascaramiento(unsigned char* originales, unsigned char* mascara, int cant
  * @return El byte con los bits desplazados hacia la derecha.
  */
 
-unsigned char shiftRightBit(unsigned char byte, int n,unsigned char txt) {
-    n %= 8;
-    return byte >> n;
-    //Compara la informacion anterior
+// unsigned char shiftRightBit(unsigned char byte, int n,unsigned char txt) {
+//     n %= 8;
+//     return byte >> n;
+//     //Compara la informacion anterior
 
-}
+// }
 
 
 
-/**
- * @brief Realiza un desplazamiento a nivel de bit hacia la izquierda en un byte.
- *
- * @param byte El byte a desplazar.
- * @param n La cantidad de bits a desplazar (0-7).
- * @return El byte con los bits desplazados hacia la izquierda.
- */
-unsigned char shiftLeftBit(unsigned char byte, int n) {
-    n %= 8;
-    return byte << n;
-}
+// /**
+//  * @brief Realiza un desplazamiento a nivel de bit hacia la izquierda en un byte.
+//  *
+//  * @param byte El byte a desplazar.
+//  * @param n La cantidad de bits a desplazar (0-7).
+//  * @return El byte con los bits desplazados hacia la izquierda.
+//  */
+// unsigned char shiftLeftBit(unsigned char* byte, int n) {
+//     n %= 8;
+//     return byte << n;
+// }
+

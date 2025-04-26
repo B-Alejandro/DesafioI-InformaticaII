@@ -6,24 +6,10 @@ QT += core
 SOURCES += main.cpp \
     BitaBit.cpp \
     ManipulacionImagenes.cpp \
-    ManipulacionImagenes.cpp
+    ManipulacionImagenes.cpp \
+    OrdenPasos.cpp
 
 HEADERS += \
-    ManipulacionImagenes.h \
-    ManipulacionImagenes.h
+    ModulosEncriptacion.h \
 
 
-HEADERS += \
-    ManipulacionImagenes.h
-
-QT += core
-SOURCES += main.cpp \
-    ManipulacionImagenes.cpp
-
-HEADERS += \
-    ManipulacionImagenes.h \
-    ManipulacionImagenes.h
-
-
-HEADERS += \
-    ManipulacionImagenes.h

@@ -105,7 +105,7 @@ bool exportImage(unsigned char* pixelData, int width, int height, QString archiv
         return true;
     }
 }
-unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels){
+unsigned int* loadSeedMasking(string nombreArchivo, int &seed, int &n_pixels){
     /*
  * @brief Carga la semilla y los resultados del enmascaramiento desde un archivo de texto.
  *

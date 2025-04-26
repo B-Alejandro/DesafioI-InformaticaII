@@ -1,5 +1,5 @@
-#ifndef MANIPULACIONIMAGENES_H
-#define MANIPULACIONIMAGENES_H
+#ifndef MODULOSENCRIPTACION_H
+#define MODULOSENCRIPTACION_H
 
 #include <fstream>
 #include <iostream>
@@ -31,10 +31,15 @@ unsigned char* DoXOR(unsigned char* imagen, unsigned char* mascara, int width, i
 unsigned char* RotarDerecha(int num_pixels, unsigned char* img, int n);
 
 // Rota los bits de cada byte hacia la izquierda.
-unsigned char* RotarIzquierda(int num_pixels, unsigned char* img, int n);
+unsigned char* RotarIzquierda(unsigned char* img, int num_pixels, int n);
 
 // Realiza un enmascaramiento sumando valores de la máscara al arreglo original con un desplazamiento inicial (semilla).
-void Enmascaramiento(unsigned char* originales, unsigned char* mascara, int cantidad, int seed);
+
+void Desenmascaramiento(unsigned char* originales, unsigned char* mascara, int cantidad, int seed);
 unsigned char shiftLeftBit(unsigned char byte, int n);
 unsigned char shiftRightBit(unsigned char byte, int n,unsigned char txt);
-#endif // MANIPULACIONIMAGENES_H
+int8_t EsXor(unsigned char* imagen, unsigned char* mascara, unsigned char* maskingData, int8_t seed);
+int8_t EsRotacion(unsigned char* imagen, unsigned char* maskingData, int8_t seed);
+int8_t EsEnmascaramiento(unsigned char* imagen, unsigned char* mascara, unsigned char* maskingData, int8_t seed);
+int8_t obtenerNumeroEtapas(QString rutaBase);
+#endif // MODULOSENCRIPTACION_H
