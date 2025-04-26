@@ -35,5 +35,6 @@ unsigned char* RotarIzquierda(int num_pixels, unsigned char* img, int n);
 
 // Realiza un enmascaramiento sumando valores de la máscara al arreglo original con un desplazamiento inicial (semilla).
 void Enmascaramiento(unsigned char* originales, unsigned char* mascara, int cantidad, int seed);
-
+unsigned char shiftLeftBit(unsigned char byte, int n);
+unsigned char shiftRightBit(unsigned char byte, int n,unsigned char txt);
 #endif // MANIPULACIONIMAGENES_H
