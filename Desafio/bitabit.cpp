@@ -1,11 +1,13 @@
-#include "operaciones.h"
-
+#include "bitabit.h"
 #include <iostream>
 #include <fstream>
 #include <QCoreApplication>
 #include <QImage>
 
 using namespace std;
+
+// Constantes
+//const int MAX_BITS = 7;
 
 unsigned char* DoXOR(unsigned char* img1, unsigned char* img2, int width, int height) {
     int totalPixels = width * height * 3;

@@ -1,5 +1,4 @@
-#include "procesamiento.h"
-
+#include "exportarimg.h"
 #include <iostream>
 #include <fstream>
 #include <QCoreApplication>
@@ -7,6 +6,8 @@
 
 using namespace std;
 
+// Constantes
+//const int MAX_BITS = 7;
 
 unsigned char* loadPixels(const QString& input, int& width, int& height) {
     QImage imagen(input);
@@ -80,18 +81,4 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int& seed, int& n_pixel
     cout << "Cantidad de pixeles leidos: " << n_pixels << endl;
 
     return RGB;
-}
-
-// Función para crear una copia de seguridad
-void crearBackupImagen(const QString& rutaBase, int etapa, unsigned char* img, int width, int height) {
-    QString nombreBackup = QString("%1backup_p%2.bmp").arg(rutaBase).arg(etapa+1);
-    exportImage(img, width, height, nombreBackup);
-    cout << "Copia de seguridad creada: " << nombreBackup.toStdString() << endl;
-}
-
-// Función para renombrar la imagen reconstruida
-void renombrarImagenReconstruida(const QString& rutaBase, int etapa, unsigned char* img, int width, int height) {
-    QString nombreNuevo = QString("%1p%2.bmp").arg(rutaBase).arg(etapa);
-    exportImage(img, width, height, nombreNuevo);
-    cout << "Imagen reconstruida guardada como: " << nombreNuevo.toStdString() << endl;
 }

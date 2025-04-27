@@ -1,6 +1,7 @@
-#include "validacion.h"
-#include "operaciones.h"
+#include "funvalidacion.h"
+#include "bitabit.h"
 
+#include "exportarimg.h"
 #include <iostream>
 #include <fstream>
 #include <QCoreApplication>
@@ -8,6 +9,8 @@
 
 using namespace std;
 
+// Constantes
+//const int MAX_BITS = 7;
 
 // Función para validar el resultado del desenmascaramiento
 bool ValidarDesenmascaramiento(unsigned char* imgDesenmascarada, unsigned int* valoresEsperados, int semilla, int anchoIMG, int altoIMG, int mask_ancho, int mask_alto) {
@@ -75,3 +78,56 @@ bool validarRotarDerecha(unsigned char* actualIMG, unsigned int* datosMascara, i
     return esValido;
 }
 
+// bool validarConArchivoMascara(unsigned char* imgOriginal, unsigned int* datosMascara, int semilla, int anchoIMG, int altoIMG, int mask_ancho, int mask_alto) {
+//     // 1. Primero aplicar el desenmascaramiento
+//     unsigned char* imgDesenmascarada = AplicarMascaraInversa(
+//         imgOriginal, datosMascara, semilla, anchoIMG, altoIMG, mask_ancho, mask_alto);
+
+//     // 2. Preparar parámetros para validación
+//     int DimensionMascara = mask_ancho * mask_alto;
+//     int pos = semilla;
+//     int totalPixeles = anchoIMG * altoIMG * 3;
+
+//     cout << "Iniciando validacion con posicion inicial: " << pos << endl;
+//     cout << "Dimension de mascara: " << DimensionMascara << " elementos ("
+//          << DimensionMascara*3 << " componentes de color)" << endl;
+
+//     bool validacionExitosa = true;
+
+//     // 3. Validar cada pixel
+//     for (int k = 0; k < DimensionMascara && pos + 2 < totalPixeles; k++) {
+//         unsigned char r = imgDesenmascarada[pos];
+//         unsigned char g = imgDesenmascarada[pos+1];
+//         unsigned char b = imgDesenmascarada[pos+2];
+
+//         // Los valores esperados son los mismos datosMascara pero interpretados diferente
+//         unsigned int esperado_r = datosMascara[k*3] % 256;
+//         unsigned int esperado_g = datosMascara[k*3+1] % 256;
+//         unsigned int esperado_b = datosMascara[k*3+2] % 256;
+
+//         cout << "\nPixel " << k + 1 << " (pos " << pos << "-" << pos+2 << "):" << endl;
+//         cout << "  Obtenido: (" << (int)r << "," << (int)g << "," << (int)b << ")" << endl;
+//         cout << "  Esperado: (" << esperado_r << "," << esperado_g << "," << esperado_b << ")" << endl;
+
+//         if (r != esperado_r || g != esperado_g || b != esperado_b) {
+//             cout << "  ERROR: No coinciden los valores" << endl;
+//             validacionExitosa = false;
+//             // Puedes decidir si quieres continuar o salir aquí
+//         } else {
+//             cout << "  OK: Coincidencia correcta" << endl;
+//         }
+
+//         pos += 3;
+//     }
+
+//     // 4. Limpiar memoria
+//     delete[] imgDesenmascarada;
+
+//     if (validacionExitosa) {
+//         cout << "\nVALIDACION EXITOSA: Todos los pixeles coinciden" << endl;
+//     } else {
+//         cout << "\nVALIDACION FALLIDA: Algunos pixeles no coinciden" << endl;
+//     }
+
+//     return validacionExitosa;
+// }
