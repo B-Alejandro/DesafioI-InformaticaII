@@ -8,7 +8,13 @@
 
 QT += core gui
 CONFIG += console c++17
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    operaciones.cpp \
+    procesamiento.cpp \
+    validacion.cpp
 
-HEADERS +=
+HEADERS += \
+    operaciones.h \
+    procesamiento.h \
+    validacion.h
 
