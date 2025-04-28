@@ -124,7 +124,7 @@ void RotarIzquierda(unsigned char* img, int num_pixels, int n) {
 
 
 void Desenmascaramiento(unsigned char* originales, unsigned char* mascara, int cantidad, int seed) {
-    seed/=3;
+    seed=3;
     for (int i = 0; i < cantidad; ++i) {
         int indexOriginal = seed + i;  // Índice base en originales para el píxel i
         int indexMascara = i;           // Índice base en mascara para el píxel i

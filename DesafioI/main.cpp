@@ -161,7 +161,7 @@ int main() {
 
     // Declarar rutas importantes
     QString rutaBase = "Datos/";
-    QString rutaBaseC = rutaBase + "Caso 1/";
+    QString rutaBaseC = rutaBase + "Caso 2/";
     // Obtener el numero de etapas
     uint8_t numEtapas = obtenerNumeroEtapas(rutaBaseC);
     cout << "Numero de etapas detectadas: " << (int)numEtapas << endl;
