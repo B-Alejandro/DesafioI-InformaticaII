@@ -1,7 +1,7 @@
 #ifndef OPERACIONES_H
 #define OPERACIONES_H
 
-const int MAX_BITS = 7;
+const int MAX_BITS = 8;
 
 unsigned char* DoXOR(unsigned char* img1, unsigned char* img2, int width, int height);
 unsigned char* RotarDerecha(unsigned char* img, int num_pixels, int n);
